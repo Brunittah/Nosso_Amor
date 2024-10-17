@@ -1,0 +1,503 @@
+<?php declare(strict_types=1); 
+
+?>
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosso Amor</title>
+    <style>
+
+
+
+
+
+
+         body {
+            background: url('https://wallpapers.com/images/hd/dark-blue-heart-pattern-s79nzn3ilff9kpmo.jpg') no-repeat center center fixed; /* Fundo com corações */
+            background-size: cover; /* Para garantir que a imagem cobre toda a área */
+    background-position: center; /* Centraliza a imagem */
+    background-repeat: no-repeat; /* Evita que a imagem se repita */
+            color: #000;
+            font-family: 'Cursive', sans-serif;
+            position: relative;
+            padding-bottom: 50px;
+        }
+
+        nav {
+            background-color: rgba(0, 0,  139, 0.7); /* Rosa claro com transparência */
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        nav ul li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        nav ul li a {
+            color: white; /* Cor roxa */
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            text-align: center;
+            color: #69afff; /* Rosa para os títulos */
+        }
+
+        .secao {
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #bbf1f8; /* Rosa suave */
+            margin-bottom: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            display: none; /* Começa escondido */
+            animation: fadeIn 1s ease-in-out forwards;
+        }
+
+        .galeria {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .galeria img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #139;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #ff4757;
+        }
+
+        /* Animações de corações */
+        @keyframes flutuar {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+        .coracao {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 50px;
+            animation: flutuar 2s infinite ease-in-out;
+            color: #ff69b4; /* Rosa */
+        }
+
+        /* Fade-in para secções */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script>
+        let pontos = 0; // Inicializa pontos
+        let perguntaIndex = 0; // Inicializa índice da pergunta
+        let jogoTerminado = false; // Controla se o jogo terminou
+        const perguntas = [
+            "És lindo?", "És perfeito?", "És maravilhoso?", "És a melhor pessoa da minha vida?", 
+            "És incrível?", "És especial para mim?", "És Unico ?", "És fantástico?", 
+            "Eu amo te?", "És meeeeeu?"
+        ];
+
+        function mostrarSecao(secao) {
+            document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+            document.getElementById(secao).style.display = 'block';
+
+            if (secao === 'jogo') {
+                iniciarJogo(); // Inicia o jogo ao abrir a secção
+            }
+        }
+        function adicionarDeclaracao() {
+        const declaracaoInput = document.getElementById('declaracaoInput').value;
+        if (declaracaoInput) {
+            const lista = document.getElementById('listaDeclaracoes');
+            const item = document.createElement('li');
+            item.textContent = declaracaoInput;
+
+            const removerBtn = document.createElement('button');
+            removerBtn.textContent = 'Remover';
+            removerBtn.onclick = () => removerItem(item, 'declaracoes');
+            removerBtn.classList.add('esquerda');
+
+            item.appendChild(removerBtn);
+            lista.appendChild(item);
+            document.getElementById('declaracaoInput').value = '';
+            salvarLista('declaracoes', lista.innerHTML);
+        }
+    }
+
+    function adicionarMemoria() {
+        const memoriaInput = document.getElementById('memoriaInput').value;
+        if (memoriaInput) {
+            const lista = document.getElementById('listaMemorias');
+            const item = document.createElement('li');
+            item.textContent = memoriaInput;
+
+            const removerBtn = document.createElement('button');
+            removerBtn.textContent = 'Remover';
+            removerBtn.onclick = () => removerItem(item, 'memorias');
+            removerBtn.classList.add('esquerda');
+
+            item.appendChild(removerBtn);
+            lista.appendChild(item);
+            document.getElementById('memoriaInput').value = '';
+            salvarLista('memorias', lista.innerHTML);
+        }
+    }
+
+
+    function adicionarElogio() {
+        const elogioInput = document.getElementById('elogioInput').value;
+        if (elogioInput) {
+            const lista = document.getElementById('listaElogios');
+            const item = document.createElement('li');
+            item.textContent = elogioInput;
+
+            const removerBtn = document.createElement('button');
+            removerBtn.textContent = 'Remover';
+            removerBtn.onclick = () => removerItem(item, 'elogios');
+            removerBtn.classList.add('esquerda');
+
+            item.appendChild(removerBtn);
+            lista.appendChild(item);
+            document.getElementById('elogioInput').value = '';
+            salvarLista('elogios', lista.innerHTML);
+        }
+    }
+
+    // Função para remover item e atualizar localStorage
+    function removerItem(item, chave) {
+        const lista = item.parentElement;
+        lista.removeChild(item);
+        salvarLista(chave, lista.innerHTML);
+    }
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+    function adicionarImagem() {
+        const imagemInput = document.getElementById('imagemInput');
+        const galeria = document.querySelector('.galeria');
+        const files = imagemInput.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgContainer = document.createElement('div');
+                imgContainer.style.position = 'relative';
+                imgContainer.style.display = 'inline-block';
+
+                const img = document.createElement('img');
+                img.src = e.target.result;
+
+                const removerBtn = document.createElement('button');
+                removerBtn.textContent = 'Remover';
+                removerBtn.onclick = () => {
+                    galeria.removeChild(imgContainer);
+                    salvarImagens(); // Atualiza o armazenamento
+                };
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(removerBtn);
+                galeria.appendChild(imgContainer);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        imagemInput.value = ''; // Limpa o input após adicionar
+        salvarImagens(); // Salva as imagens atuais
+    }
+
+    function salvarImagens() {
+        const galeria = document.querySelector('.galeria');
+        const imagens = [];
+
+        const imgElements = galeria.getElementsByTagName('img');
+        for (let i = 0; i < imgElements.length; i++) {
+            imagens.push(imgElements[i].src);
+        }
+
+        localStorage.setItem('galeriaImagens', JSON.stringify(imagens));
+    }
+
+    function carregarImagens() {
+        const galeria = document.querySelector('.galeria');
+        const imagens = JSON.parse(localStorage.getItem('galeriaImagens')) || [];
+
+        imagens.forEach(src => {
+            const imgContainer = document.createElement('div');
+            imgContainer.style.position = 'relative';
+            imgContainer.style.display = 'inline-block';
+
+            const img = document.createElement('img');
+            img.src = src;
+
+            const removerBtn = document.createElement('button');
+            removerBtn.textContent = 'Remover';
+            removerBtn.onclick = () => {
+                galeria.removeChild(imgContainer);
+                salvarImagens(); // Atualiza o armazenamento
+            };
+
+            imgContainer.appendChild(img);
+            imgContainer.appendChild(removerBtn);
+            galeria.appendChild(imgContainer);
+        });
+    }
+
+    // Chama a função de carregar imagens ao carregar a página
+    document.addEventListener('DOMContentLoaded', carregarImagens);
+
+
+
+
+
+
+
+
+
+
+
+
+    function salvarLista(chave, valor) {
+        localStorage.setItem(chave, valor);
+    }
+
+    function carregarLista(chave, elementoId) {
+        const lista = localStorage.getItem(chave);
+        if (lista) {
+            document.getElementById(elementoId).innerHTML = lista;
+            adicionarFuncoesRemover(elementoId, chave); // Adiciona a função de remover aos itens carregados
+        }
+    }
+
+    // Função para re-adicionar a função de remover aos itens carregados
+    function adicionarFuncoesRemover(elementoId, chave) {
+        const lista = document.getElementById(elementoId).getElementsByTagName('li');
+        for (let i = 0; i < lista.length; i++) {
+            const removerBtn = lista[i].getElementsByTagName('button')[0];
+            removerBtn.onclick = () => removerItem(lista[i], chave);
+        }
+    }
+
+    // Carregar listas salvas ao carregar a página
+    document.addEventListener('DOMContentLoaded', function() {
+        carregarLista('declaracoes', 'listaDeclaracoes');
+        carregarLista('memorias', 'listaMemorias');
+        carregarLista('elogios', 'listaElogios');
+        carregarImagens(); // Carrega as imagens da galeria ao carregar a página
+    });
+
+  
+
+
+    
+    function mostrarSecao(secao) {
+            document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+            document.getElementById(secao).style.display = 'block';
+
+            if (secao === 'jogo') {
+                iniciarJogo(); // Inicia o jogo ao abrir a secção
+            }
+        }
+        function iniciarJogo() {
+            pontos = 0; // Reseta pontos
+            perguntaIndex = 0; // Reseta pergunta
+            jogoTerminado = false; // Reseta estado de jogo terminado
+            document.getElementById('resultado').textContent = '';
+            document.getElementById('trofeu').style.display = 'none'; // Esconde troféu
+            document.getElementById('mensagem-final').textContent = ''; // Esconde mensagem final
+            fazerPergunta();
+        }
+
+        function fazerPergunta() {
+            if (perguntaIndex < perguntas.length) {
+                document.getElementById('pergunta').textContent = perguntas[perguntaIndex];
+            } else {
+                // Exibe a mensagem final e bloqueia o jogo
+                jogoTerminado = true; // Define como jogo terminado
+                document.getElementById('trofeu').style.display = 'block'; // Exibe troféu
+                document.getElementById('resultado').textContent = '';
+                document.getElementById('mensagem-final').textContent = `És perfeito e um ótimo namorado! Eu amo te infinito <3 Pontuação: ${pontos}`;
+            }
+        }
+
+        function responder(resposta) {
+            if (jogoTerminado) {
+                return; // Se o jogo terminou, não permite mais respostas
+            }
+
+            if (resposta === 'sim') {
+                pontos++; // Incrementa pontos
+                perguntaIndex++; // Próxima pergunta
+                fazerPergunta();
+            } else {
+                document.getElementById('resultado').textContent = "Resposta errada! Tente novamente.";
+                setTimeout(() => {
+                    document.getElementById('resultado').textContent = ''; // Remove a mensagem após 2 segundos
+                }, 1000);
+            }
+        }
+       
+
+
+</script>
+
+
+
+
+
+
+
+</head>
+<body>
+  
+    <!-- Corações animados -->
+    <div class="coracao">❤️</div>
+    <div class="coracao coracao-pequeno coracao-rapido">❤️</div>
+
+
+
+    <nav>
+        <ul>
+            <li><a onclick="mostrarSecao('Inicio')">Inicio</a></li>
+            <li><a onclick="mostrarSecao('declaracoes')">Declarações</a></li>
+            <li><a onclick="mostrarSecao('memorias')">Memórias</a></li>
+            <li><a onclick="mostrarSecao('fotos')">Fotos</a></li>
+            <li><a onclick="mostrarSecao('elogios')">Elogios</a></li>
+            <li><a onclick="mostrarSecao('jogo')">Mini Jogo</a></li>
+        </ul>
+    </nav>
+
+  
+    <div class="container">
+      
+          </div>
+          <div id="Inicio" class="secao">
+            <h2>OLÁ AMOOOOORRR</h2>
+            <h3>Feliz 5 mesitos para nós , lembraste do textinho do dia do namorado well esta aqui ele mas com algumas mudanças!
+                (ignora os botões de remover pls NAO CARREGUES PFV :( )isto nao é nada demais mas quis fazer algo diferente ja que nao tenho dinheiro para te oferecer nada por causa da carta :( disculpa 
+            Espero que gostes! Eu amo te infinito </h3>
+          </div>
+        <!-- Secção de Declarações -->
+        <div id="declaracoes" class="secao">
+            <h2>Declarações</h2>
+            <input type="text" id="declaracaoInput" placeholder="Escreve a tua declaração">
+            <button onclick="adicionarDeclaracao()">Adicionar</button>
+            <ul id="listaDeclaracoes"></ul>
+        </div>
+
+        <!-- Secção de Memórias -->
+        <div id="memorias" class="secao">
+            <h2>Memórias</h2>
+            <input type="text" id="memoriaInput" placeholder="Escreve uma memória">
+            <button onclick="adicionarMemoria()">Adicionar</button>
+            <ul id="listaMemorias"></ul>
+        </div>
+
+        <!-- Secção de Fotos -->
+        <div id="fotos" class="secao">
+            <h2>Fotos</h2>
+            <input type="file" id="imagemInput" accept="image/*" multiple>
+            <button onclick="adicionarImagem()">Adicionar Imagem</button>
+            <div class="galeria"></div>
+        </div>
+
+        <!-- Secção de Elogios -->
+        <div id="elogios" class="secao">
+            
+              
+            <h2>Elogios</h2>
+            <input type="text" id="elogioInput" placeholder="Escreve o teu elogio">
+            <button onclick="adicionarElogio()">Adicionar</button>
+            <ul id="listaElogios"></ul>
+        </div>
+
+        <!-- Secção de Jogo -->
+        <div id="jogo" class="secao">
+            <h2>Mini Jogo</h2>
+            <div id="pergunta"></div>
+            <button onclick="responder('sim')">Sim</button>
+            <button onclick="responder('nao')">Não</button>
+            <div id="resultado"></div>
+            <div class="trofeu" id="trofeu">🏆</div>
+            <div class="mensagem-final" id="mensagem-final"></div>
+        </div>
+    </div>
+</body>
+</html>
